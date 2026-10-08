@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<meta name="apple-mobile-web-app-title" content="Sillabe">
+<meta name="theme-color" content="#ffffff">
+<title>Sillabe</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:#fff;color:#000;font-family:-apple-system,BlinkMacSystemFont,"Arial",sans-serif}
+body{display:flex;flex-direction:column;min-height:100%;overflow:hidden}
+.top{text-align:center;padding:calc(env(safe-area-inset-top) + 14px) 20px 8px;font-weight:800;font-size:clamp(20px,3vw,30px)}
+.progress{text-align:center;font-size:18px;font-weight:600}
+.area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.syllable{width:min(82vw,850px);height:min(42vh,360px);border:7px solid #000;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:clamp(110px,24vw,250px);font-weight:900;line-height:1}
+.word{font-size:clamp(28px,5vw,52px);font-weight:800;margin-top:24px;min-height:65px;text-align:center}
+.hint{font-size:18px;text-align:center;margin:4px 15px 12px;font-weight:600}
+.controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 18px calc(env(safe-area-inset-bottom) + 20px)}
+button{appearance:none;background:#fff;color:#000;border:4px solid #000;border-radius:18px;font-size:clamp(18px,3vw,28px);font-weight:800;padding:16px 24px;min-width:145px;min-height:64px}
+button:active{background:#000;color:#fff}
+.listen{min-width:190px}
+@media(max-width:600px){.controls{gap:8px}.controls button{min-width:110px;padding:12px 14px}.listen{min-width:150px}}
+</style>
+</head>
+<body>
+<div class="top">IMPARO LE SILLABE</div>
+<div class="progress" id="progress"></div>
+<div class="area">
+  <div class="syllable" id="syllable" role="button" aria-label="Tocca per ascoltare">BA</div>
+  <div class="word" id="word">BANANA</div>
+</div>
+<div class="hint">LEGGI LA SILLABA. POI TOCCA 🔊 PER ASCOLTARLA.</div>
+<div class="controls">
+  <button onclick="prev()">◀ INDIETRO</button>
+  <button class="listen" onclick="speak()">🔊 ASCOLTA</button>
+  <button onclick="next()">AVANTI ▶</button>
+</div>
+<script>
+const syllables=[
+"BA","BE","BI","BO","BU","CA","CE","CI","CO","CU",
+"DA","DE","DI","DO","DU","FA","FE","FI","FO","FU",
+"GA","GE","GI","GO","GU","LA","LE","LI","LO","LU",
+"MA","ME","MI","MO","MU","NA","NE","NI","NO","NU",
+"PA","PE","PI","PO","PU","RA","RE","RI","RO","RU",
+"SA","SE","SI","SO","SU","TA","TE","TI","TO","TU",
+"VA","VE","VI","VO","VU","ZA","ZE","ZI","ZO","ZU"
+];
+const words={
+BA:"BANANA",BE:"BEBÈ",BI:"BICI",BO:"BOCCA",BU:"BUE",
+CA:"CANE",CE:"CENA",CI:"CIBO",CO:"CODA",CU:"CUBO",
+DA:"DADO",DE:"DENTE",DI:"DITO",DO:"DOLCE",DU:"DUE",
+FA:"FATA",FE:"FESTA",FI:"FILO",FO:"FOCA",FU:"FUMO",
+GA:"GATTO",GE:"GELATO",GI:"GIRAFFA",GO:"GOMMA",GU:"GUFO",
+LA:"LUNA",LE:"LEONE",LI:"LIBRO",LO:"LOTO",LU:"LUNA",
+MA:"MAMMA",ME:"MELA",MI:"MIMO",MO:"MOTO",MU:"MUCCA",
+NA:"NAVE",NE:"NEVE",NI:"NIDO",NO:"NOCE",NU:"NUVOLA",
+PA:"PANE",PE:"PESCE",PI:"PINO",PO:"POLLO",PU:"PULCINO",
+RA:"RANA",RE:"RETE",RI:"RISO",RO:"ROSA",RU:"RUOTA",
+SA:"SALE",SE:"SEDIA",SI:"SÌ",SO:"SOLE",SU:"SUOLA",
+TA:"TAVOLO",TE:"TELA",TI:"TIGRE",TO:"TOPO",TU:"TUBO",
+VA:"VASO",VE:"VELA",VI:"VINO",VO:"VOLPE",VU:"VULCANO",
+ZA:"ZAINO",ZE:"ZERO",ZI:"ZIO",ZO:"ZOO",ZU:"ZUCCHERO"
+};
+let index=0;
+function render(){
+ const s=syllables[index];
+ document.getElementById("syllable").textContent=s;
+ document.getElementById("word").textContent=words[s]||"";
+ document.getElementById("progress").textContent=(index+1)+" / "+syllables.length;
+}
+function next(){index=(index+1)%syllables.length;render()}
+function prev(){index=(index-1+syllables.length)%syllables.length;render()}
+function speak(){
+ const u=new SpeechSynthesisUtterance(syllables[index]);
+ u.lang="it-IT";u.rate=.62;u.pitch=1;
+ speechSynthesis.cancel();speechSynthesis.speak(u);
+}
+document.getElementById("syllable").addEventListener("click",speak);
+render();
+</script>
+</body>
+</html>
